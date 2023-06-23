@@ -1,0 +1,22 @@
+ dataset:
+      script_path: os.path.join(data_path, "raw", "dataset siralatriste.csv") 
+
+ model:
+      script_path: os.path.join(src_path,"..","models") 
+
+ train: 
+      script_path: os.path.join(data_path, 'train.csv' 
+
+ test: 
+      script_path: os.path.join(data_path, 'test.csv' 
+
+ best_model: 
+      script_path: os.path.join(mod_path, "modelo_LR.pkl") 
+      model_type: LinearRegression 
+
+ columns_used: 
+      for_Xtrain: [['Med Juego Compartido', 'Med Horas vistas Juego', 'Med Impresiones Juego', 'Med Visualizaciones Juego', 'Med Suscriptores Juego', 'Med Visualizaciones Año' ]]
+      for_ytrain: [['Visualizaciones']]
+
+ traintestsplit: 
+      params: X, y, test_size=0.33, random_state=33
