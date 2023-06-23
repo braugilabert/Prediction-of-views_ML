@@ -4,12 +4,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 
-test = pd.read_csv('ML Project/data/test.csv') 
+test = pd.read_csv('Prediction-of-views_ML/data/test.csv') 
 
 X = test[['Med Juego Compartido']]
 y = test[['Visualizaciones']]
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=33)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=33)
 
 lr = LinearRegression()
 lr.fit(X_train,y_train)
