@@ -1,6 +1,6 @@
-# Prediction-of-views_ML Project
+# Prediction of views Machine Learning Project
 
-Hello there, this is my very first project of Machine Learning. 
+Hello there, this is my very first ML's project. 
 
 My goal is to predict the views of my videos, in order to have a better knowledge about my video's potential and increase my community and popularity in YouTube. 
 
