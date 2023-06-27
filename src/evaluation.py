@@ -1,22 +1,35 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+import pickle
 from sklearn import metrics
+from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
-test = pd.read_csv('Prediction-of-views_ML/data/test.csv') 
+with open('Prediction_views_ML/models/modelo_XGB.pkl', 'rb') as f:
+    model = pickle.load(f)
 
-X = test[['Med Juego Compartido']]
-y = test[['Visualizaciones']]
+test = pd.read_csv('Prediction_views_ML/data/test.csv')
+test = test.loc[test['Visualizaciones']<35000,:] #quito 2 outliers para ver que tal
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=33)
+X = test.drop(columns=['Visualizaciones', 'Título del vídeo'])
+y = test['Visualizaciones']
 
-lr = LinearRegression()
-lr.fit(X_train,y_train)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=33, shuffle=True)
 
-predicciones_finales = lr.predict(X_test)
+predicciones = model.predict(X_test)
+predicciones
 
-print("MAE", metrics.mean_absolute_error(y_test, predicciones_finales))
-print("MSE", metrics.mean_squared_error(y_test, predicciones_finales))
-print("RMSE", np.sqrt(metrics.mean_squared_error(y_test, predicciones_finales)))
-# print("MAPE", mean_absolute_percentage_error(dy_test, predicciones_finales)) #probar
+predicciones = model.predict(X_test)
+
+model.score(X_test, y_test) #revisar
+
+mse = mean_squared_error(y_test,predicciones) #REVISAR
+mae = metrics.mean_absolute_error(y_test, predicciones)
+rmse = np.sqrt(metrics.mean_squared_error(y_test, predicciones))
+mape = mean_absolute_percentage_error(y_test, predicciones)
+
+print("Mean Squared Error:", mse)
+print("Mean Absolute Error:", mse)
+print("RMSE:", rmse)
+print("MAPE", mape)

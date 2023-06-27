@@ -1,26 +1,51 @@
 import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_val_score
+from xgboost import XGBRegressor
 import pickle
+import yaml
 
-data = pd.read_csv('Prediction-of-views_ML/data/processed.csv')
+df = pd.read_csv('Prediction_views_ML/data/processed.csv')
+df = df.loc[df['Visualizaciones']<35000,:] #quito 2 outliers para ver que tal
 
-train, test = train_test_split(data, test_size=0.3, shuffle=True) #con shuffle, que los videos estaban ordenados por visualizaciones
+X = df.drop(columns=['Visualizaciones', 'Título del vídeo'])
+y = df['Visualizaciones']
 
-train.to_csv('Prediction-of-views_ML/data/train.csv', index=False) #PARA PASAR PARTE A TRAIN Y PARTE A TEST
-test.to_csv('Prediction-of-views_ML/data/test.csv', index=False)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=33, shuffle=True)
 
-X = train[['Med Juego Compartido']]
-y = train[['Visualizaciones']]
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=33)
+regressor = XGBRegressor()
+model = regressor.fit(X_train, y_train)
+y_pred = model.predict(X_test)
 
-# REGRESIÓN LINEAL
+# XGBRegressor
 
-lr = LinearRegression()
-lr.fit(X_train,y_train)
+regressor = XGBRegressor(
+    gamma=0.05,
+    learning_rate=0.1,
+    max_depth=5,
+    n_estimators=100,
+    objective='reg:squarederror',
+    subsample=0.2,
+    scale_pos_weight=0,
+    reg_alpha=0,
+    reg_lambda=1
+)
+model = regressor.fit(X_train, y_train)
+y_pred = model.predict(X_test)
 
-y_pred = lr.predict(X_test) #predicciones
-
-with open('Prediction-of-views_ML/models/modelo_LR.pkl', 'wb') as archivo:
-    pickle.dump(lr, archivo)
+import pickle
+with open('Prediction_views_ML/models/modelo_XGB.pkl', 'wb') as archivo:
+    pickle.dump(model, archivo)
+    
+with open('Prediction_views_ML/models/modelo_config_def.yaml', 'w') as c:
+    yaml.dump(model, c)
