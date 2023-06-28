@@ -6,5 +6,4 @@ My goal is to predict the views of my videos, in order to have a better knowledg
 
 You can see the important insights in SirAlatriste's web page:
 https://sites.google.com/view/siralatriste/siralatriste/predicci%C3%B3n-de-visualizaciones-siralatriste?authuser=0
-
-![Uploading Firefly a background for a linkedin profile with things of data science and books 99397.jpg…]()
+![Background DS](https://github.com/braugilabert/Prediction_views_ML/assets/130987096/4c311d7d-0845-47a4-8b17-0f3e7fbdf266)
