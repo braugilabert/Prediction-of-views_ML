@@ -1,18 +1,15 @@
 import pandas as pd
-import numpy as np
-import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV #Hecho en notebooks. Los parámetros que salen aqui son los mejores.
+from sklearn.model_selection import cross_val_score #no lo he usado
 from xgboost import XGBRegressor
 import pickle
 import yaml
 
 df = pd.read_csv('Prediction_views_ML/data/processed.csv')
-df = df.loc[df['Visualizaciones']<35000,:] #quito 2 outliers para ver que tal
+df = df.loc[df['Visualizaciones']<35000,:] #quito 2 outliers
 
 X = df.drop(columns=['Visualizaciones', 'Título del vídeo'])
 y = df['Visualizaciones']
@@ -27,7 +24,7 @@ regressor = XGBRegressor()
 model = regressor.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
-# XGBRegressor
+# XGBRegressor con la mejor hiperparametrización (tras haber hecho GridSearchCV de 50 minutos)
 
 regressor = XGBRegressor(
     gamma=0.05,
