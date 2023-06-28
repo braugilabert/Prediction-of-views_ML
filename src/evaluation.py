@@ -1,35 +1,33 @@
+import pickle
 import pandas as pd
 import numpy as np
-import pickle
-from sklearn import metrics
-from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-with open('Prediction_views_ML/models/modelo_XGB.pkl', 'rb') as f:
-    model = pickle.load(f)
 
-test = pd.read_csv('Prediction_views_ML/data/test.csv')
-test = test.loc[test['Visualizaciones']<35000,:] #quito 2 outliers para ver que tal
+df = pd.read_csv('Prediction_views_ML/data/processed.csv')
+df = df.loc[df['Visualizaciones']<35000,:] # Quito los 2 outliers
 
-X = test.drop(columns=['Visualizaciones', 'Título del vídeo'])
-y = test['Visualizaciones']
+X_test = df.drop(columns=['Visualizaciones', 'Título del vídeo'])
+y_test = df['Visualizaciones']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=33, shuffle=True)
+""" X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=33, shuffle=True) """
 
-predicciones = model.predict(X_test)
-predicciones
+with open('Prediction_views_ML/models/modelo_RFR.pkl', 'rb') as archivo_entrada:
+    mejor_modelo = pickle.load(archivo_entrada)
 
-predicciones = model.predict(X_test)
+""" mejor_modelo = RandomForestRegressor(
+    criterion= 'absolute_error',
+    max_depth=3,
+    max_features=5,
+    min_samples_leaf=2,
+    min_samples_split=8) """
 
-model.score(X_test, y_test) #revisar
+""" mejor_modelo.fit(X_train, y_train) """
 
-mse = mean_squared_error(y_test,predicciones) #REVISAR
-mae = metrics.mean_absolute_error(y_test, predicciones)
-rmse = np.sqrt(metrics.mean_squared_error(y_test, predicciones))
-mape = mean_absolute_percentage_error(y_test, predicciones)
+y_pred = mejor_modelo.predict(X_test)
 
-print("Mean Squared Error:", mse)
-print("Mean Absolute Error:", mse)
-print("RMSE:", rmse)
-print("MAPE", mape)
+print("MAE:", mean_absolute_error(y_test, y_pred))
+print("MSE:", mean_squared_error(y_test, y_pred))
+print('RMSE:', np.sqrt(mean_squared_error(y_test, y_pred))) 

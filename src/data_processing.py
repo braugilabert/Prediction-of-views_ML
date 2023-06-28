@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sklearn
+from sklearn.preprocessing import LabelEncoder
 
 data = pd.read_csv('Prediction_views_ML/data/raw/dataset siralatriste.csv')
 
@@ -36,8 +37,6 @@ data['Med Visualizaciones Juego'] = data.groupby('Juego')['Visualizaciones'].tra
 #para sacar la media de suscriptores ganados en cada uno de los juegos
 data['Med Suscriptores Juego'] = data.groupby('Juego')['Suscriptores'].transform('mean')
 
-from sklearn.preprocessing import LabelEncoder
-
 le = LabelEncoder()
 data['Juego_int'] = le.fit_transform(data['Juego'])
 
@@ -53,7 +52,6 @@ data['TW'] = np.where(data['Juego'].str.contains('Total War'), 1 , 0)
 
 #data[data['TW']==1]['Juego'].value_counts(normalize=True) #para contar dichos valores 1 
 
-
 data['Med Visualizaciones Año'] = data.groupby('Año')['Visualizaciones'].transform('mean')
 
 data['Visualizaciones necesarias para suscribirse al canal'] = data['Visualizaciones'] / data['Suscriptores']
@@ -65,9 +63,7 @@ data['Visualizaciones necesarias para suscribirse al canal'].replace([np.inf, -n
 data['Visualizaciones necesarias para compartir el video'].replace([np.inf, -np.inf], 0, inplace=True)
 
 # Eliminacion de columnas
-
 data.drop(columns=['Compartido', 'Tiempo de visualización (horas)', 'Suscriptores', 'Impresiones', 'Me gusta', 'Comentarios'], inplace=True)
-
 data.drop(columns=['SEO', 'Año', 'Juego_int', 'Título_1', 'Med Duracion de Visualizaciones Juego', 'Me gusta (vs. No me gusta) (%)', 'Med Likes x juego', 'TW', 'Duración media de las visualizaciones', 'Med porcentaje likes/dislikes Juego', 'Historia', 'Med Juego Comentarios', 'Fecha', 'Juego', 'Datos Duración media de las visualizaciones'], inplace=True)
 
 #GUARDAR ARCHIVO
