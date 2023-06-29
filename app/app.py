@@ -5,118 +5,61 @@ import pickle
 import streamlit as st
 from PIL import Image
 
-with open('Prediction_views_ML/models/modelo_RFR.pkl', 'rb') as a:
+with open('../models/modelo_RFR.pkl', 'rb') as a:
     best_model = pickle.load(a)
 
-st.set_page_config(page_title="Views prediction", page_icon=":moneybag:",layout="wide",
+st.set_page_config(page_title="Views prediction :projector:", page_icon=":fire_extinguisher:",layout="wide",
      initial_sidebar_state="expanded")
 
-df = pd.read_csv("Prediction_views_ML/data/streamlit.csv")
+df = pd.read_csv('../data/test.csv')
+df = df.loc[df['Visualizaciones']<35000,:] # Quito los 2 outliers
 
-
-""" def main():
+def main():
     col1, col2 = st.columns((1,2))
 
     with col1:
-        st.write(' ')
+        st.write('Random Forests Regressor prediction.')
 
     with col2:
-        st.image("Prediction_views_ML/Background DS.jpg")
+        st.image("../Background DS.jpg")
 
-    st.sidebar.header('Parámetros personalizados')
+
+st.sidebar.header('Parámetros personalizados')
     
-    # Página prediccion
-    def user_input_parameters():
+def user_input_parameters():
+        max_players = st.sidebar.slider("Porcentaje de clics de las impresiones (%)",0,12)
+        bgg_rank = st.sidebar.slider("Med Juego Compartido",0,10)
+        complejidad_juego = st.sidebar.slider("Med Horas vistas Juego",0,123)
+        owned_users = st.sidebar.slider("Med Impresiones Juego",117,9400)
+        mech_action = st.sidebar.slider("Med porcentaje clicks Impresiones Juego",0,7)
+        min_age = st.sidebar.slider("Med Visualizaciones Juego",36,3685)
+        mech_acting = st.sidebar.slider("Med Suscriptores Juego",0,11)
+        mech_not_defined = st.sidebar.slider("Med Visualizaciones Año",28,1299)
+        min_players = st.sidebar.slider("Visualizaciones necesarias para suscribirse al canal",0,5477)
+        play_time = st.sidebar.slider("Visualizaciones necesarias para compartir el video",0,8049)
+    
+    
+        data ={
+        "Porcentaje de clics de las impresiones (%)":max_players,
+        "Med Juego Compartido":bgg_rank,
+        "Med Horas vistas Juego":complejidad_juego,
+        "Med Impresiones Juego":owned_users,
+        "Med porcentaje clicks Impresiones Juego":mech_action,
+        "Med Visualizaciones Juego":min_age,
+        "Med Suscriptores Juego":mech_acting,
+        "Med Visualizaciones Año":mech_not_defined,
+        "Visualizaciones necesarias para suscribirse al canal":min_players,
+        "Visualizaciones necesarias para compartir el video":play_time,
+}
 
-        #Nivel experiencia
-        Año = st.sidebar.slider('Año', 2020, 2023)
-        Nivel_experiencia = st.sidebar.selectbox('Nivel de experiencia', ("EN", "MI", "SE", "EX"))
-        if Nivel_experiencia == "EN":
-            Nivel_experiencia = 1
-        elif Nivel_experiencia == "MI":
-            Nivel_experiencia = 2
-        elif Nivel_experiencia == "SE":
-            Nivel_experiencia = 3
-        elif Nivel_experiencia == "EX":
-            Nivel_experiencia = 4
-        #Tipo contrato
-        Tipo_contrato = st.sidebar.selectbox('Tipo de contrato', ('FT', 'CT', 'FL', 'PT'))
-        if Tipo_contrato == "FT":
-            Tipo_contrato = 2
-        elif Tipo_contrato == "CT":
-            Tipo_contrato = 0
-        elif Tipo_contrato == "FL":
-            Tipo_contrato = 1
-        elif Tipo_contrato == "PT":
-            Tipo_contrato = 3
-        #Puesto trabajo
-        Puesto_trabajo = st.sidebar.selectbox('Puesto de trabajo', ('scientist','Data Science','cloud',
-    'Data Analyst','Data Analytics','Data Engineer','Data Strategist','Machine Learning','ML','AI','MLOps','Head'))
-        if Puesto_trabajo == "scientist":
-            Puesto_trabajo = 1
-        elif Puesto_trabajo == "Data Science":
-            Puesto_trabajo = 1
-        elif Puesto_trabajo == "cloud":
-            Puesto_trabajo = 2
-        elif Puesto_trabajo == "Data Analyst":
-            Puesto_trabajo = 3
-        elif Puesto_trabajo == "Data Analytics":
-            Puesto_trabajo = 3
-        elif Puesto_trabajo == "Data Engineer":
-            Puesto_trabajo = 3
-        elif Puesto_trabajo == "Data Strategist":
-            Puesto_trabajo = 3
-        elif Puesto_trabajo == "Machine Learning":
-            Puesto_trabajo = 4
-        elif Puesto_trabajo == "ML":
-            Puesto_trabajo = 4
-        elif Puesto_trabajo == "AI":
-            Puesto_trabajo = 4
-        elif Puesto_trabajo == "MLOps":
-            Puesto_trabajo = 4
-        elif Puesto_trabajo == "Head":
-            Puesto_trabajo = 5
-        else:
-            Puesto_trabajo = 6
-        #Ratio remoto
-        Ratio_remoto = st.sidebar.selectbox('Ratio Remoto', ('100','50','0',))
-        if Ratio_remoto == "100":
-            Ratio_remoto = 100
-        elif Ratio_remoto == "50":
-            Ratio_remoto = 50
-        elif Ratio_remoto == "0":
-            Ratio_remoto = 0
-        #pais empleado
-        Pais_residencia_trabajador = st.sidebar.selectbox('Pais trabajador', sorted(paises_trabajador.keys()))
-        valor_asignado_trab = paises_trabajador[Pais_residencia_trabajador]
-        #Pais empresa
-        Pais_empresa = st.sidebar.selectbox('Pais empresa', sorted(paises_trabajador.keys()))
-        valor_empresa = paises_empresa[Pais_empresa]
-        #Tamaño empresa
-        Tamaño_empresa = st.sidebar.selectbox('Tamaño empresa', ('S','M','L',))
-        if Tamaño_empresa == "S":
-            Tamaño_empresa = 0
-        elif Tamaño_empresa == "M":
-            Tamaño_empresa = 1
-        elif Tamaño_empresa == "L":
-             Tamaño_empresa = 2
-
-        data = {'Nivel_experiencia' : Nivel_experiencia,
-                'Tipo_contrato':Tipo_contrato,
-                'Puesto_trabajo':Puesto_trabajo,
-                'Ratio_remoto': Ratio_remoto,
-                'Pais_residencia_trabajador': valor_asignado_trab,
-                "Pais_empresa": valor_empresa,
-                "Año" : Año,
-                "Tamaño_empresa": Tamaño_empresa
-               }
-        
         features = pd.DataFrame(data, index=[0])
         return features
     
-    df = user_input_parameters()
-    prediccion = model_pretrained.predict(df)
-    st.success("El salario estimado sería de: " + str(round(prediccion[0], 2)))
+df = user_input_parameters()
+prediccion = best_model.predict(df)
+st.success("Las visualizaciones serían de: " + str(round(prediccion[0], 2)))
+
 
 if __name__ == '__main__':
-    main() """
+    main()
+##python -m streamlit run main.py 

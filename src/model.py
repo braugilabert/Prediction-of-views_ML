@@ -6,8 +6,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-
-df = pd.read_csv('Prediction_views_ML/data/processed.csv')
+df = pd.read_csv('Prediction_views_ML/data/test.csv')
 df = df.loc[df['Visualizaciones']<35000,:] # Quito los 2 outliers
 
 X = df.drop(columns=['Visualizaciones', 'Título del vídeo'])
