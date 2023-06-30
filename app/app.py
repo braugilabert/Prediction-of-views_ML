@@ -15,13 +15,13 @@ st.set_page_config(page_title="Views prediction :projector:", page_icon=":fire_e
 df = pd.read_csv('../data/test.csv')
 df = df.loc[df['Visualizaciones']<35000,:] # Quito los 2 outliers
 
-process = pd.read_csv('../data/processed.csv')
+process = pd.read_csv('../data/streamlit.csv')
 
 def main():
     
     st.image("../Background DS.jpg")
-    st.write("<div style='display:flex; flex-direction:column;'><h1 style='text-align: center;'>Processed dataset</h1>", unsafe_allow_html=True)
-    st.dataframe(process.head())
+    st.write("<div style='display:flex; flex-direction:column;'><h1 style='text-align: center;'>Full dataset</h1>", unsafe_allow_html=True)
+    st.dataframe(process.head(7))
     st.write("<div style='display:flex; flex-direction:column;'><h1 style='text-align: center;'>Gráfico predicts</h1>", unsafe_allow_html=True)
     st.image("../docs/predict menos 3000.png")
     st.write("<div style='display:flex; flex-direction:column;'><h1 style='text-align: center;'>Random Forest Regressor prediction</h1>", unsafe_allow_html=True)
