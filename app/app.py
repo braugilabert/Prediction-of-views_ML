@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 import pickle
 import streamlit as st
+import matplotlib.pyplot as plt
 from PIL import Image
 
 with open('../models/modelo_RFR.pkl', 'rb') as a:
@@ -14,12 +15,19 @@ st.set_page_config(page_title="Views prediction :projector:", page_icon=":fire_e
 df = pd.read_csv('../data/test.csv')
 df = df.loc[df['Visualizaciones']<35000,:] # Quito los 2 outliers
 
+process = pd.read_csv('../data/processed.csv')
+
 def main():
     
-    st.write("<div style='display:flex; flex-direction:column;'><h1 style='text-align: center;'>Random Forest Regressor prediction</h1>", unsafe_allow_html=True)
     st.image("../Background DS.jpg")
-
-
+    st.write("<div style='display:flex; flex-direction:column;'><h1 style='text-align: center;'>Processed dataset</h1>", unsafe_allow_html=True)
+    st.dataframe(process.head())
+    st.write("<div style='display:flex; flex-direction:column;'><h1 style='text-align: center;'>Gráfico predicts</h1>", unsafe_allow_html=True)
+    st.image("../docs/predict menos 3000.png")
+    st.write("<div style='display:flex; flex-direction:column;'><h1 style='text-align: center;'>Random Forest Regressor prediction</h1>", unsafe_allow_html=True)
+    st.dataframe(df)
+    st.success("Las visualizaciones del vídeo serían de: " + str(round(prediccion[0], 2)))
+    
 st.sidebar.header('Parámetros personalizados')
     
 def user_input_parameters():
@@ -53,8 +61,6 @@ def user_input_parameters():
     
 df = user_input_parameters()
 prediccion = best_model.predict(df)
-st.success("Las visualizaciones del vídeo serían de: " + str(round(prediccion[0], 2)))
-
 
 if __name__ == '__main__':
     main()
